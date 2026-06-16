@@ -1,0 +1,2071 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0" />
+  <title>Admin Panel – Radiko Khaitan Limited</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      color: #111827;
+      background: #eef2f7
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit
+    }
+
+    ul {
+      list-style: none
+    }
+
+    :root {
+      --navy: #0a1f3c;
+      --blue: #1a4faa;
+      --sky: #2563eb;
+      --pale: #eff6ff;
+      --xpale: #f8faff;
+      --gold: #f59e0b;
+      --teal: #0d9488;
+      --green: #16a34a;
+      --g50: #f9fafb;
+      --g100: #f3f4f6;
+      --g200: #e5e7eb;
+      --g400: #9ca3af;
+      --g500: #6b7280;
+      --g700: #374151;
+      --sh1: 0 1px 4px rgba(0, 0, 0, .07);
+      --sh2: 0 4px 16px rgba(10, 31, 60, .1);
+      --sh3: 0 16px 48px rgba(10, 31, 60, .16);
+      --r: 13px;
+      --rl: 18px
+    }
+
+    .layout {
+      display: flex;
+      min-height: 100vh
+    }
+
+    .sb {
+      width: 240px;
+      background: var(--navy);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 200;
+      transition: transform .3s;
+      overflow-y: auto
+    }
+
+    .sb-head {
+      padding: 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, .08)
+    }
+
+    .sb-name {
+      font-weight: 800;
+      font-size: 15px;
+      color: #fff;
+      line-height: 1.3
+    }
+
+    .sb-tag {
+      font-size: 9px;
+      color: rgba(255, 255, 255, .35);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 2px
+    }
+
+    .sb-nav {
+      padding: 8px 0;
+      flex: 1
+    }
+
+    .mi {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px;
+      cursor: pointer;
+      color: rgba(255, 255, 255, .6);
+      font-size: 13px;
+      font-weight: 500;
+      transition: all .2s;
+      border-left: 3px solid transparent
+    }
+
+    .mi:hover,
+    .mi.on {
+      background: rgba(255, 255, 255, .08);
+      color: #fff;
+      border-left-color: var(--gold)
+    }
+
+    .mi-ico {
+      font-size: 16px;
+      width: 18px;
+      flex-shrink: 0
+    }
+
+    .sb-foot {
+      padding: 14px 18px;
+      border-top: 1px solid rgba(255, 255, 255, .08)
+    }
+
+    .sb-out {
+      width: 100%;
+      padding: 8px;
+      background: rgba(239, 68, 68, .15);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, .3);
+      border-radius: 7px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer
+    }
+
+    .sb-out:hover {
+      background: rgba(239, 68, 68, .28)
+    }
+
+    .mob-top {
+      display: none;
+      background: var(--navy);
+      padding: 12px 16px;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 150
+    }
+
+    .mob-top-name {
+      font-weight: 800;
+      font-size: 14px;
+      color: #fff
+    }
+
+    .mob-menu-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px
+    }
+
+    .mob-menu-btn span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: #fff;
+      border-radius: 2px
+    }
+
+    .mob-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .5);
+      z-index: 190
+    }
+
+    .mob-overlay.show {
+      display: block
+    }
+
+    .main {
+      margin-left: 240px;
+      padding: 22px;
+      flex: 1;
+      min-width: 0
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 10px
+    }
+
+    .pg-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      color: var(--navy)
+    }
+
+    .info-chip {
+      background: var(--pale);
+      color: var(--blue);
+      padding: 5px 13px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 600
+    }
+
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 18px
+    }
+
+    .kp {
+      background: #fff;
+      border-radius: var(--r);
+      padding: 16px 13px;
+      border: 1px solid var(--g200);
+      box-shadow: var(--sh1)
+    }
+
+    .kp-ico {
+      font-size: 22px;
+      margin-bottom: 7px
+    }
+
+    .kp-n {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--navy);
+      font-family: 'Playfair Display', serif;
+      line-height: 1
+    }
+
+    .kp-l {
+      font-size: 11px;
+      color: var(--g500);
+      margin-top: 2px
+    }
+
+    .panel {
+      background: #fff;
+      border-radius: var(--rl);
+      padding: 20px;
+      border: 1px solid var(--g200);
+      box-shadow: var(--sh1);
+      margin-bottom: 18px
+    }
+
+    .ph {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 8px
+    }
+
+    .ph h3 {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--navy)
+    }
+
+    .add-btn {
+      padding: 7px 14px;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif
+    }
+
+    .add-btn:hover {
+      background: var(--navy)
+    }
+
+    .srch {
+      padding: 7px 12px;
+      border: 1.5px solid var(--g200);
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      width: 180px
+    }
+
+    .srch:focus {
+      border-color: var(--sky)
+    }
+
+    .tbl-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 500px
+    }
+
+    thead th {
+      text-align: left;
+      padding: 9px 10px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      color: var(--g500);
+      background: var(--g50);
+      border-bottom: 1px solid var(--g200)
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--g100);
+      transition: background .15s
+    }
+
+    tbody tr:hover {
+      background: var(--xpale)
+    }
+
+    tbody td {
+      padding: 9px 10px;
+      font-size: 12.5px;
+      color: var(--g700);
+      white-space: nowrap
+    }
+
+    .lr td {
+      text-align: center;
+      padding: 22px;
+      color: var(--g400);
+      font-size: 13px;
+      white-space: normal
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 50px;
+      font-size: 10.5px;
+      font-weight: 700
+    }
+
+    .bg {
+      background: #dcfce7;
+      color: #15803d
+    }
+
+    .by {
+      background: #fef9c3;
+      color: #a16207
+    }
+
+    .bb {
+      background: var(--pale);
+      color: var(--blue)
+    }
+
+    .br {
+      background: #fee2e2;
+      color: #b91c1c
+    }
+
+    .bt {
+      background: #f0fdf4;
+      color: var(--teal)
+    }
+
+    .abt {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap
+    }
+
+    .ab {
+      padding: 4px 8px;
+      border: none;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      white-space: nowrap
+    }
+
+    .eb {
+      background: #eff6ff;
+      color: var(--blue)
+    }
+
+    .db {
+      background: #fee2e2;
+      color: #b91c1c
+    }
+
+    .wb {
+      background: #dcfce7;
+      color: #15803d
+    }
+
+    .mod-bg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .45);
+      z-index: 999;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 16px;
+      backdrop-filter: blur(4px);
+      overflow-y: auto
+    }
+
+    .mod-bg.open {
+      display: flex
+    }
+
+    .mod {
+      background: #fff;
+      border-radius: var(--rl);
+      padding: 24px;
+      width: 100%;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, .25)
+    }
+
+    .mod h3 {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 18px
+    }
+
+    .mg {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .fg {
+      display: flex;
+      flex-direction: column;
+      gap: 5px
+    }
+
+    .fg label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--g700);
+      text-transform: uppercase;
+      letter-spacing: .6px
+    }
+
+    .fg input,
+    .fg select,
+    .fg textarea {
+      padding: 10px 11px;
+      border: 1.5px solid var(--g200);
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      width: 100%;
+      background: #fff;
+      transition: border-color .2s
+    }
+
+    .fg input:focus,
+    .fg select:focus,
+    .fg textarea:focus {
+      border-color: var(--sky)
+    }
+
+    .ma {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      justify-content: flex-end
+    }
+
+    .cb {
+      padding: 9px 16px;
+      background: var(--g100);
+      color: var(--g700);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 13px
+    }
+
+    .sbtn {
+      padding: 9px 20px;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 800;
+      font-size: 13px
+    }
+
+    .sbtn:hover {
+      background: var(--navy)
+    }
+
+    .mm {
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      display: none;
+      margin-bottom: 13px
+    }
+
+    .mm-ok {
+      background: #dcfce7;
+      border: 1px solid #86efac;
+      color: #166534
+    }
+
+    .mm-err {
+      background: #fee2e2;
+      border: 1px solid #fca5a5;
+      color: #b91c1c
+    }
+
+    .ni {
+      background: var(--g50);
+      border: 1px solid var(--g200);
+      border-radius: 11px;
+      padding: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 10px
+    }
+
+    .ni-t {
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 4px;
+      font-size: 14px
+    }
+
+    .ni-c {
+      font-size: 12.5px;
+      color: var(--g500);
+      line-height: 1.55
+    }
+
+    .ni-d {
+      font-size: 10.5px;
+      color: var(--g400);
+      margin-top: 4px
+    }
+
+    .tab {
+      display: none
+    }
+
+    .tab.on {
+      display: block
+    }
+
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 600;
+      z-index: 9999;
+      display: none;
+      color: #fff;
+      max-width: 280px
+    }
+
+    /* Enquiry */
+    .enq-card {
+      background: var(--g50);
+      border: 1px solid var(--g200);
+      border-radius: 11px;
+      padding: 14px;
+      margin-bottom: 10px
+    }
+
+    .enq-name {
+      font-weight: 700;
+      color: var(--navy);
+      font-size: 14px
+    }
+
+    .enq-detail {
+      font-size: 12.5px;
+      color: var(--g500);
+      margin-top: 4px;
+      line-height: 1.55
+    }
+
+    .enq-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      flex-wrap: wrap;
+      gap: 8px
+    }
+
+    .enq-date {
+      font-size: 11px;
+      color: var(--g400)
+    }
+
+    /* Backup */
+    .bk-box {
+      background: var(--g50);
+      border: 1.5px solid var(--g200);
+      border-radius: var(--r);
+      padding: 20px;
+      margin-bottom: 14px
+    }
+
+    .bk-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px
+    }
+
+    .bk-desc {
+      font-size: 13px;
+      color: var(--g500);
+      margin-bottom: 14px;
+      line-height: 1.6
+    }
+
+    .bk-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 9px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s
+    }
+
+    .bk-export {
+      background: linear-gradient(135deg, #0d9488, #14b8a6);
+      color: #fff
+    }
+
+    .bk-import {
+      background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+      color: #fff
+    }
+
+    .bk-clear {
+      background: linear-gradient(135deg, #dc2626, #ef4444);
+      color: #fff
+    }
+
+    @media(max-width:768px) {
+      .sb {
+        transform: translateX(-100%)
+      }
+
+      .sb.mob-open {
+        transform: translateX(0)
+      }
+
+      .main {
+        margin-left: 0;
+        padding: 16px
+      }
+
+      .mob-top {
+        display: flex
+      }
+
+      .kpi-row {
+        grid-template-columns: repeat(3, 1fr)
+      }
+
+      .mg {
+        grid-template-columns: 1fr
+      }
+
+      .ma {
+        flex-direction: column
+      }
+
+      .cb,
+      .sbtn {
+        width: 100%
+      }
+    }
+
+    @media(max-width:480px) {
+      .main {
+        padding: 12px
+      }
+
+      .kpi-row {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .kp {
+        padding: 13px 10px
+      }
+
+      .kp-n {
+        font-size: 20px
+      }
+
+      .srch {
+        width: 130px
+      }
+
+      .panel {
+        padding: 14px
+      }
+    }
+
+    /* ── ADMIN PHOTO GRID ── */
+    .admin-photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+      margin-top: 8px
+    }
+
+    .adm-ph-item {
+      aspect-ratio: 4/3;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      background: var(--g100);
+      cursor: pointer
+    }
+
+    .adm-ph-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover
+    }
+
+    .adm-ph-ov {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background .2s;
+      padding: 8px
+    }
+
+    .adm-ph-item:hover .adm-ph-ov {
+      background: rgba(0, 0, 0, .6)
+    }
+
+    .adm-ph-cap {
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0);
+      text-align: center;
+      transition: color .2s
+    }
+
+    .adm-ph-item:hover .adm-ph-cap {
+      color: #fff
+    }
+
+    .adm-ph-del {
+      padding: 4px 12px;
+      background: rgba(239, 68, 68, .85);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      opacity: 0;
+      transition: opacity .2s
+    }
+
+    .adm-ph-item:hover .adm-ph-del {
+      opacity: 1
+    }
+
+    /* Pending review card */
+    .pend-rv-card {
+      background: var(--g50);
+      border: 1px solid var(--g200);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 10px;
+      position: relative
+    }
+
+    .pend-rv-text {
+      font-size: 13.5px;
+      color: var(--g700);
+      font-style: italic;
+      margin: 6px 0 10px
+    }
+
+    .pend-rv-meta {
+      font-size: 12px;
+      color: var(--g500)
+    }
+
+    .pend-rv-stars {
+      color: #f59e0b;
+      font-size: 14px;
+      letter-spacing: 2px;
+      margin: 4px 0
+    }
+
+    .pend-rv-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px
+    }
+
+    /* Approved review card */
+    .appr-rv-card {
+      background: var(--g50);
+      border: 1.5px solid #86efac;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 10px;
+      position: relative
+    }
+  </style>
+</head>
+
+<body>
+  <div class="layout">
+
+    <div class="mob-top">
+      <div class="mob-top-name">Radiko Khaitan Admin</div>
+      <button class="mob-menu-btn" onclick="toggleSb()"><span></span><span></span><span></span></button>
+    </div>
+    <div class="mob-overlay" id="overlay" onclick="closeSb()"></div>
+
+    <aside class="sb" id="sidebar">
+      <div class="sb-head">
+        <div class="sb-name">Radiko Khaitan Limited</div>
+        <div class="sb-tag">Admin Panel</div>
+      </div>
+      <div class="sb-nav">
+        <div class="mi on" onclick="go('dashboard',this)"><span class="mi-ico">📊</span>Dashboard</div>
+        <div class="mi" onclick="go('students',this)"><span class="mi-ico">👨‍🎓</span>Students</div>
+        <div class="mi" onclick="go('courses',this)"><span class="mi-ico">📚</span>Courses</div>
+        <div class="mi" onclick="go('attendance',this)"><span class="mi-ico">📋</span>Attendance</div>
+        <div class="mi" onclick="go('marks',this)"><span class="mi-ico">📝</span>Marks / Exam</div>
+        <div class="mi" onclick="go('certificates',this)"><span class="mi-ico">🎓</span>Certificates</div>
+        <div class="mi" onclick="go('photos',this)"><span class="mi-ico">📷</span>Photos &amp; Gallery <span
+            id="photoBadge"
+            style="display:none;background:rgba(239,68,68,.8);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:50px;margin-left:4px">0</span>
+        </div>
+        <div class="mi" onclick="go('reviews',this)"><span class="mi-ico">⭐</span>Reviews <span id="reviewBadge"
+            style="display:none;background:rgba(239,68,68,.8);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:50px;margin-left:4px">0</span>
+        </div>
+        <div class="mi" onclick="go('notices',this)"><span class="mi-ico">📢</span>Notice Board</div>
+        <div class="mi" onclick="go('enquiries',this)"><span class="mi-ico">📩</span>Enquiries</div>
+        <div class="mi" onclick="go('complaints',this)"><span class="mi-ico">🗣️</span>Complaints</div>
+        <div class="mi" onclick="go('backup',this)"><span class="mi-ico">💾</span>Backup & Restore</div>
+        <div class="mi" onclick="go('settings',this)"><span class="mi-ico">⚙️</span>Settings</div>
+      </div>
+      <div class="sb-foot">
+        <div style="font-size:10px;color:rgba(255,255,255,.3);text-align:center;margin-bottom:7px">Logged in as Admin
+        </div>
+        <button class="sb-out" onclick="logout()">🚪 Logout</button>
+      </div>
+    </aside>
+
+    <main class="main">
+
+      <!-- DASHBOARD -->
+      <div class="tab on" id="tab-dashboard">
+        <div class="topbar">
+          <div class="pg-title">Dashboard</div>
+          <div class="info-chip" id="dateChip"></div>
+        </div>
+        <div class="kpi-row">
+          <div class="kp">
+            <div class="kp-ico">👨‍🎓</div>
+            <div class="kp-n" id="ks">0</div>
+            <div class="kp-l">Students</div>
+          </div>
+          <div class="kp">
+            <div class="kp-ico">📚</div>
+            <div class="kp-n" id="kc">0</div>
+            <div class="kp-l">Courses</div>
+          </div>
+          <div class="kp">
+            <div class="kp-ico">🎓</div>
+            <div class="kp-n" id="kce">0</div>
+            <div class="kp-l">Certs Issued</div>
+          </div>
+          <div class="kp">
+            <div class="kp-ico">📩</div>
+            <div class="kp-n" id="ke">0</div>
+            <div class="kp-l">Enquiries</div>
+          </div>
+          <div class="kp">
+            <div class="kp-ico">📢</div>
+            <div class="kp-n" id="kn">0</div>
+            <div class="kp-l">Notices</div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="ph">
+            <h3>Recent Students</h3>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Course</th>
+                  <th>Enrolled On</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="recentTbl">
+                <tr class="lr">
+                  <td colspan="5">Loading…</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="panel" id="recentEnqPanel">
+          <div class="ph">
+            <h3>Recent Enquiries</h3>
+          </div>
+          <div id="recentEnq"></div>
+        </div>
+      </div>
+
+      <!-- STUDENTS -->
+      <div class="tab" id="tab-students">
+        <div class="topbar">
+          <div class="pg-title">Students</div><button class="add-btn" onclick="openM('student')">+ Add Student</button>
+        </div>
+        <div class="panel">
+          <div class="ph">
+            <h3>All Students</h3><input class="srch" placeholder="🔍 Search…" oninput="filterStu(this.value)" />
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Course</th>
+                  <th>Phone</th>
+                  <th>Attend.</th>
+                  <th>Cert</th>
+                  <th>Enrolled</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="stuTbl"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- COURSES -->
+      <div class="tab" id="tab-courses">
+        <div class="topbar">
+          <div class="pg-title">Courses</div><button class="add-btn" onclick="openM('course')">+ Add Course</button>
+        </div>
+        <div class="panel">
+          <div class="ph">
+            <h3>All Courses</h3>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Course Name</th>
+                  <th>Duration</th>
+                  <th>Category</th>
+                  <th>Enrolled</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="crsTbl"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ATTENDANCE -->
+      <div class="tab" id="tab-attendance">
+        <div class="topbar">
+          <div class="pg-title">Attendance</div>
+        </div>
+        <div class="panel">
+          <div class="ph">
+            <h3>Update Attendance</h3>
+            <select id="attF"
+              style="padding:7px 10px;border:1.5px solid var(--g200);border-radius:8px;font-size:12.5px;font-family:'DM Sans',sans-serif;outline:none;max-width:200px"
+              onchange="renderAtt()">
+              <option value="">All Courses</option>
+            </select>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Course</th>
+                  <th>Current %</th>
+                  <th>Update</th>
+                </tr>
+              </thead>
+              <tbody id="attTbl"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- MARKS -->
+      <div class="tab" id="tab-marks">
+        <div class="topbar">
+          <div class="pg-title">Marks / Exam Results</div><button class="add-btn" onclick="openM('marks')">+ Add
+            Marks</button>
+        </div>
+        <div class="panel">
+          <div class="ph">
+            <h3>All Student Marks</h3>
+            <select id="marksFilter"
+              style="padding:7px 10px;border:1.5px solid var(--g200);border-radius:8px;font-size:12.5px;font-family:'DM Sans',sans-serif;outline:none;max-width:200px"
+              onchange="renderMarks()">
+              <option value="">All Students</option>
+            </select>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Student ID</th>
+                  <th>Student Name</th>
+                  <th>Subject</th>
+                  <th>Obtained</th>
+                  <th>Total</th>
+                  <th>%</th>
+                  <th>Grade</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="marksTbl"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- CERTIFICATES -->
+      <div class="tab" id="tab-certificates">
+        <div class="topbar">
+          <div class="pg-title">Certificates</div>
+        </div>
+        <div class="panel">
+          <div class="ph">
+            <h3>Certificate Status</h3>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Course</th>
+                  <th>Govt. Cert.</th>
+                  <th>Sanstha Cert.</th>
+                  <th>Overall</th>
+                </tr>
+              </thead>
+              <tbody id="certTbl"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOTICES -->
+      <div class="tab" id="tab-notices">
+        <div class="topbar">
+          <div class="pg-title">Notice Board</div><button class="add-btn" onclick="openM('notice')">+ Add
+            Notice</button>
+        </div>
+        <div class="panel">
+          <div class="ph">
+            <h3>All Notices</h3>
+          </div>
+          <div id="noteList"></div>
+        </div>
+      </div>
+
+      <!-- ENQUIRIES -->
+      <div class="tab" id="tab-enquiries">
+        <div class="topbar">
+          <div class="pg-title">Enquiries</div>
+        </div>
+        <div class="panel">
+          <div class="ph">
+            <h3>All Enquiries from Website</h3><span id="enqCount" class="badge bb"></span>
+          </div>
+          <div id="enqList"></div>
+        </div>
+      </div>
+
+      <!-- COMPLAINTS -->
+      <div class="tab" id="tab-complaints">
+        <div class="topbar">
+          <div class="pg-title">Student Complaints</div>
+        </div>
+        <div class="panel">
+          <div class="ph">
+            <h3>All Student Complaints</h3>
+          </div>
+          <div id="complaintList"></div>
+        </div>
+      </div>
+
+      <!-- BACKUP -->
+      <div class="tab" id="tab-backup">
+        <div class="topbar">
+          <div class="pg-title">Backup & Restore</div>
+        </div>
+        <div class="bk-box">
+          <div class="bk-title">📤 Export / Backup Data</div>
+          <div class="bk-desc">Saara data (students, courses, notices, enquiries) ek JSON file mein download karein.
+            Apne computer pe safe rakho.</div>
+          <button class="bk-btn bk-export" onclick="exportData()">⬇️ Export All Data (JSON)</button>
+        </div>
+        <div class="bk-box">
+          <div class="bk-title">📥 Import / Restore Data</div>
+          <div class="bk-desc">Pehle export ki gayi JSON file se data restore karein. <strong>Note:</strong> Isse
+            current data replace ho jaayega.</div>
+          <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this)" />
+          <button class="bk-btn bk-import" onclick="document.getElementById('importFile').click()">⬆️ Import Data
+            (JSON)</button>
+        </div>
+        <div class="bk-box">
+          <div class="bk-title">🗑️ Clear All Data</div>
+          <div class="bk-desc">Saara data delete karein aur fresh start karein. <strong>Yeh kaam undo nahi
+              hoga!</strong> Pehle export karein.</div>
+          <button class="bk-btn bk-clear" onclick="clearAllData()">🗑️ Clear All Data</button>
+        </div>
+      </div>
+
+
+      <!-- PHOTOS -->
+      <div class="tab" id="tab-photos">
+        <div class="topbar">
+          <div class="pg-title">📷 Photos &amp; Gallery</div>
+          <button class="add-btn" onclick="openM('photo')">+ Photo Add Karein</button>
+        </div>
+        <!-- Pending review count -->
+        <div class="panel" id="pendingReviewPanel" style="display:none">
+          <div class="ph">
+            <h3>⏳ Pending Photo Requests</h3><span id="pendingPhCount" class="badge by">0</span>
+          </div>
+          <div id="pendingPhList"></div>
+        </div>
+        <div class="panel">
+          <div class="ph">
+            <h3>Approved Gallery Photos</h3>
+            <select id="galCatFilter" onchange="renderAdminGallery()"
+              style="padding:6px 10px;border:1.5px solid var(--g200);border-radius:7px;font-size:12.5px;font-family:'DM Sans',sans-serif;outline:none">
+              <option value="">All Categories</option>
+              <option>Classroom</option>
+              <option>Training</option>
+              <option>Students</option>
+              <option>Certificate</option>
+              <option>Events</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="admin-photo-grid" id="adminGalGrid">
+            <p style="color:var(--g500);font-size:13px;text-align:center;padding:20px">Koi photo nahi. Upar se add
+              karein.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- REVIEWS -->
+      <div class="tab" id="tab-reviews">
+        <div class="topbar">
+          <div class="pg-title">⭐ Student Reviews</div>
+          <button class="add-btn" onclick="clearApprovedRv()" style="background:#ef4444">🗑️ Clear All</button>
+        </div>
+        <div class="panel" id="pendingRvPanel">
+          <div class="ph">
+            <h3>⏳ Pending Reviews (Approval Chahiye)</h3><span id="pendingRvCount" class="badge by">0 pending</span>
+          </div>
+          <div id="pendingRvList">
+            <p style="color:var(--g500);font-size:13px;text-align:center;padding:16px">Koi pending review nahi.</p>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="ph">
+            <h3>✅ Approved Reviews</h3><span id="approvedRvCount" class="badge bg">0 approved</span>
+          </div>
+          <div id="approvedRvList">
+            <p style="color:var(--g500);font-size:13px;text-align:center;padding:16px">Koi approved review nahi.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="tab" id="tab-settings">
+        <div class="topbar">
+          <div class="pg-title">Settings</div>
+        </div>
+        <div class="panel" style="max-width:440px">
+          <div class="ph">
+            <h3>🔑 Change Admin Password</h3>
+          </div>
+          <div class="mm" id="pwMsg"></div>
+          <div class="fg" style="margin-bottom:12px"><label>Current Password</label><input type="password" id="oPw"
+              placeholder="Current password" /></div>
+          <div class="fg" style="margin-bottom:12px"><label>New Password</label><input type="password" id="nPw"
+              placeholder="New password" /></div>
+          <div class="fg" style="margin-bottom:18px"><label>Confirm New Password</label><input type="password" id="cPw"
+              placeholder="Confirm" /></div>
+          <button class="add-btn" onclick="changePw()" style="width:100%;padding:12px;font-size:14px">Update
+            Password</button>
+        </div>
+        <div class="panel" style="max-width:440px">
+          <div class="ph">
+            <h3>📱 WhatsApp Number Setup</h3>
+          </div>
+          <div class="fg" style="margin-bottom:14px"><label>WhatsApp Number (10 digits)</label><input id="waNum"
+              placeholder="e.g. 9876543210" maxlength="10" inputmode="numeric" /></div>
+          <button class="add-btn" onclick="saveWA()" style="width:100%;padding:12px;font-size:14px">Save WhatsApp
+            Number</button>
+          <div class="mm" id="waMsg" style="margin-top:12px"></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- STUDENT MODAL -->
+  <div class="mod-bg" id="mStudent">
+    <div class="mod">
+      <h3>➕ Add New Student</h3>
+      <div class="mm" id="sMM"></div>
+      <div class="mg">
+        <div class="fg"><label>Full Name *</label><input id="mn" placeholder="Full name" /></div>
+        <div class="fg"><label>Phone *</label><input id="mph" placeholder="10-digit mobile" maxlength="10"
+            inputmode="numeric" /></div>
+        <div class="fg"><label>Email</label><input id="mem" type="email" placeholder="Email" /></div>
+        <div class="fg"><label>Date of Birth</label><input id="mdb" type="date" /></div>
+        <div class="fg"><label>Course *</label><select id="mcr">
+            <option>Basic to Advance Computer</option>
+            <option>Tally Prime Only</option>
+
+            <option>Silai (Tailoring)</option>
+            <option>Makeup & Beauty</option>
+            <option>Solar Panel Installation</option>
+            <option>English Speaking</option>
+            <option>Hip Hop Dance</option>
+          </select></div>
+        <div class="fg"><label>Batch</label><input id="mbt" placeholder="e.g. Jan–Apr 2025" /></div>
+        <div class="fg"><label>Gender</label><select id="mgn">
+            <option value="">--</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+          </select></div>
+        <div class="fg"><label>Login Password *</label><input id="mpw" placeholder="Set password" /></div>
+        <div class="fg"><label>Address</label><input id="mad" placeholder="City, State" /></div>
+      </div>
+      <div class="ma"><button class="cb" onclick="closeM('student')">Cancel</button><button class="sbtn" id="saveStuBtn"
+          onclick="saveStu()">Save Student</button></div>
+    </div>
+  </div>
+
+  <!-- COURSE MODAL -->
+  <div class="mod-bg" id="mCourse">
+    <div class="mod">
+      <h3>➕ Add Course</h3>
+      <div class="mg">
+        <div class="fg"><label>Course Name *</label><input id="cn" placeholder="Course name" /></div>
+        <div class="fg"><label>Duration</label><input id="cd" value="3–4 Months" /></div>
+        <div class="fg"><label>Category</label><select id="cc">
+            <option>Technology</option>
+            <option>Accounts</option>
+            <option>Technical</option>
+            <option>Vocational</option>
+            <option>Beauty</option>
+            <option>Green Energy</option>
+          </select></div>
+        <div class="fg"><label>Status</label><select id="cs">
+            <option>Active</option>
+            <option>Inactive</option>
+          </select></div>
+      </div>
+      <div class="ma"><button class="cb" onclick="closeM('course')">Cancel</button><button class="sbtn"
+          onclick="saveCrs()">Save Course</button></div>
+    </div>
+  </div>
+
+  <!-- NOTICE MODAL -->
+  <div class="mod-bg" id="mNotice">
+    <div class="mod">
+      <h3>📢 Add Notice</h3>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="fg"><label>Title *</label><input id="nt" placeholder="Notice title" /></div>
+        <div class="fg"><label>Content *</label><textarea id="nc" rows="4" placeholder="Notice content…"></textarea>
+        </div>
+      </div>
+      <div class="ma"><button class="cb" onclick="closeM('notice')">Cancel</button><button class="sbtn"
+          onclick="saveNote()">Post Notice</button></div>
+    </div>
+  </div>
+
+  <!-- MARKS MODAL -->
+  <div class="mod-bg" id="mMarks">
+    <div class="mod">
+      <h3>📝 Add Exam Marks</h3>
+      <div class="mm" id="mMM"></div>
+      <div class="mg">
+        <div class="fg" style="grid-column:span 2"><label>Select Student *</label><select id="mk_stu"></select></div>
+        <div class="fg"><label>Subject *</label><input id="mk_sub" placeholder="Subject name" /></div>
+        <div class="fg"><label>Marks Obtained *</label><input id="mk_obt" type="number" min="0"
+            placeholder="Obtained" /></div>
+        <div class="fg"><label>Total Marks *</label><input id="mk_tot" type="number" min="1" placeholder="Total" />
+        </div>
+        <div class="fg"><label>Exam Date</label><input id="mk_date" type="date" /></div>
+      </div>
+      <div class="ma"><button class="cb" onclick="closeM('marks')">Cancel</button><button class="sbtn"
+          onclick="saveMarks()">Save Marks</button></div>
+    </div>
+  </div>
+
+
+  <!-- PHOTO MODAL -->
+  <div class="mod-bg" id="mPhoto">
+    <div class="mod">
+      <h3>📷 Photo Add Karein</h3>
+      <div class="mm" id="phMM"></div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="fg"><label>Photo URL *</label><input id="ph_url"
+            placeholder="Image URL paste karein (e.g. https://...)" /></div>
+        <div class="fg"><label>Caption / Title *</label><input id="ph_cap"
+            placeholder="e.g. Computer Lab, Students Training" /></div>
+        <div class="fg"><label>Category</label>
+          <select id="ph_cat">
+            <option>Classroom</option>
+            <option>Training</option>
+            <option>Students</option>
+            <option>Certificate</option>
+            <option>Events</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div
+        style="margin-top:12px;padding:10px;background:var(--g50);border-radius:8px;font-size:12px;color:var(--g500)">
+        💡 Tip: Photo URL kisi bhi image hosting site se le sakte hain (Google Drive, ImgBB, Cloudinary, etc.)
+      </div>
+      <div class="ma">
+        <button class="cb" onclick="closeM('photo')">Cancel</button>
+        <button class="sbtn" onclick="savePhotoAdmin()">📷 Add Photo</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    // ── DEFAULT DATA ──────────────────────────────────────────────
+    const DS = [
+      { id: "STU001", name: "Rahul Kumar", course: "Basic to Advance Computer", batch: "Jan–Apr 2025", attendance: 85, certGovt: "Pending", certSanstha: "Pending", phone: "9876543210", email: "rahul@email.com", dob: "2003-08-15", address: "Bareilly, UP", password: "pass123", gender: "Male", education: "12th Pass", enrolledOn: "15 Jan 2025" },
+      { id: "STU002", name: "Priya Sharma", course: "Tally Prime Only", batch: "Feb–May 2025", attendance: 92, certGovt: "Issued", certSanstha: "Issued", phone: "9123456789", email: "priya@email.com", dob: "2002-03-22", address: "Pilibhit, UP", password: "tally22", gender: "Female", education: "Graduate", enrolledOn: "10 Jan 2025" },
+      { id: "STU003", name: "Sunita Devi", course: "Silai (Tailoring)", batch: "Mar–Jun 2025", attendance: 78, certGovt: "Pending", certSanstha: "Pending", phone: "9988776655", email: "sunita@email.com", dob: "2001-01-10", address: "Badaun, UP", password: "silai55", gender: "Female", education: "10th Pass", enrolledOn: "5 Jan 2025" },
+      { id: "STU004", name: "Mohit Verma", course: "Mobile Repairing", batch: "Jan–Apr 2025", attendance: 90, certGovt: "Pending", certSanstha: "Issued", phone: "9771234567", email: "mohit@email.com", dob: "2000-05-30", address: "Bareilly, UP", password: "mob789", gender: "Male", education: "10th Pass", enrolledOn: "12 Jan 2025" },
+      { id: "STU005", name: "Anjali Singh", course: "Makeup & Beauty", batch: "Feb–May 2025", attendance: 95, certGovt: "Issued", certSanstha: "Issued", phone: "9654321098", email: "anjali@email.com", dob: "2004-11-08", address: "Lucknow, UP", password: "make99", gender: "Female", education: "12th Pass", enrolledOn: "8 Jan 2025" },
+    ];
+    const DC = [{ id: 1, name: "Basic to Advance Computer", dur: "3–4 Months", cat: "Technology", stat: "Active" }, { id: 2, name: "Tally Prime Only", dur: "3–4 Months", cat: "Accounts", stat: "Active" }, { id: 3, name: "Mobile Repairing", dur: "3–4 Months", cat: "Technical", stat: "Active" }, { id: 4, name: "Silai (Tailoring)", dur: "3–4 Months", cat: "Vocational", stat: "Active" }, { id: 5, name: "Makeup & Beauty", dur: "3–4 Months", cat: "Beauty", stat: "Active" }, { id: 6, name: "Solar Panel Installation", dur: "3–4 Months", cat: "Green Energy", stat: "Active" }];
+    const DN = [{ id: 1, title: "Class Schedule", content: "Mon–Sat, 9 AM–1 PM & 2 PM–6 PM.", date: "15 Jan 2025" }, { id: 2, title: "Holiday Notice", content: "Closed on all national holidays.", date: "10 Jan 2025" }];
+
+    function gD(k, d) { const x = localStorage.getItem(k); if (!x) { return d; } try { return JSON.parse(x); } catch (e) { return d; } }
+    function sD(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
+
+    // ── Firebase data getters (fallback to localStorage) ──
+    const getStu = () => window._fbStudents || gD('rk_students', DS);
+    const getCrs = () => window._fbCourses || gD('rk_courses', DC);
+    const getNotes = () => window._fbNotices || gD('rk_notices', DN);
+    const getAdmin = () => gD('rk_admin', { username: 'admin', password: 'admin123' });
+    const getEnqs = () => window._fbEnquiries || gD('rk_enquiries', []);
+    const getAllMarks = () => gD('rk_allmarks', []);
+    const getWA = () => localStorage.getItem('rk_wa') || 'XXXXXXXXXX';
+
+    function nextId() {
+      const s = getStu();
+      const m = s.length ? Math.max(...s.map(x => parseInt((x.id || 'STU000').replace('STU', '')) || 0)) : 5;
+      return 'STU' + String(m + 1).padStart(3, '0');
+    }
+
+    // ── INIT ──────────────────────────────────────────────────────
+    window.onload = () => {
+      if (sessionStorage.getItem('rk_admin_auth') !== 'true') { location.href = 'admin-login.html'; return; }
+      document.getElementById('dateChip').textContent = '📅 ' + new Date().toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+      const waNum = getWA(); if (document.getElementById('waNum')) document.getElementById('waNum').value = waNum === 'XXXXXXXXXX' ? '' : waNum;
+      renderAll();
+    };
+
+    function renderAll() {
+      renderDash(); renderStudents(getStu()); renderCourses(); populateAtt(); renderAtt(); renderCerts(); renderNotes(); renderEnquiries(); renderComplaints(); renderMarks(); populateMarksStu(); renderAdminGallery(); renderAdminReviews(); updateDashBadges();
+    }
+
+    // ── DASHBOARD ─────────────────────────────────────────────────
+    function renderDash() {
+      const s = getStu(), c = getCrs(), n = getNotes(), e = getEnqs();
+      document.getElementById('ks').textContent = s.length;
+      document.getElementById('kc').textContent = c.length;
+      document.getElementById('kce').textContent = s.filter(x => x.certGovt === 'Issued' || x.certSanstha === 'Issued').length;
+      document.getElementById('ke').textContent = e.length;
+      document.getElementById('kn').textContent = n.length;
+      document.getElementById('recentTbl').innerHTML = s.slice(0, 5).map(x => `<tr><td><strong>${x.id}</strong></td><td>${x.name}</td><td>${x.course}</td><td style="font-size:11px;color:var(--g400)">${x.enrolledOn || '—'}</td><td><span class="badge bg">Active</span></td></tr>`).join('');
+      const re = document.getElementById('recentEnq');
+      re.innerHTML = e.slice(0, 3).map(eq => `<div class="enq-card"><div class="enq-name">${eq.name} &nbsp;|&nbsp; <span style="color:var(--blue)">${eq.phone}</span></div><div class="enq-detail">Course: <strong>${eq.course || 'Not specified'}</strong> &nbsp;|&nbsp; ${eq.date}</div></div>`).join('') || '<p style="color:var(--g500);font-size:13px">No enquiries yet.</p>';
+    }
+
+    // ── STUDENTS ──────────────────────────────────────────────────
+    function renderStudents(list) {
+      const wa = getWA();
+      const tb = document.getElementById('stuTbl');
+      if (!list.length) { tb.innerHTML = '<tr class="lr"><td colspan="8">No students found.</td></tr>'; return; }
+      tb.innerHTML = list.map(s => `<tr>
+    <td><strong>${s.id}</strong></td><td>${s.name}</td>
+    <td style="max-width:110px;white-space:normal;line-height:1.3;font-size:12px">${s.course}</td>
+    <td>${s.phone || '—'}</td>
+    <td><span class="badge bb">${s.attendance || 0}%</span></td>
+    <td><span class="badge ${s.certGovt === 'Issued' ? 'bg' : 'by'}">${s.certGovt}</span></td>
+    <td style="font-size:11px;color:var(--g400)">${s.enrolledOn || '—'}</td>
+    <td><div class="abt">
+      <button class="ab eb" onclick="viewStu('${s.id}')">View</button>
+      <button class="ab wb" onclick="waStudent('${s.phone}','${s.name}')">💬</button>
+      <button class="ab db" onclick="delStu('${s.id}')">Del</button>
+    </div></td>
+  </tr>`).join('');
+    }
+    function filterStu(q) { q = q.toLowerCase(); renderStudents(getStu().filter(s => s.name.toLowerCase().includes(q) || s.id.toLowerCase().includes(q) || s.course.toLowerCase().includes(q))); }
+    function viewStu(id) { const s = getStu().find(x => x.id === id); if (!s) return; alert(`📋 Student Details\n\nID: ${s.id}\nName: ${s.name}\nCourse: ${s.course}\nPhone: ${s.phone || '—'}\nEmail: ${s.email || '—'}\nDOB: ${s.dob || '—'}\nGender: ${s.gender || '—'}\nEducation: ${s.education || '—'}\nBatch: ${s.batch || '—'}\nAttendance: ${s.attendance || 0}%\nAddress: ${s.address || '—'}\nGovt Cert: ${s.certGovt}\nSanstha Cert: ${s.certSanstha}\nEnrolled On: ${s.enrolledOn || '—'}\nPassword: ${s.password}`); }
+    function waStudent(phone, name) { if (!phone || phone === '—') { alert('No phone number for this student.'); return; } window.open('https://wa.me/91' + phone + '?text=Namaste%20' + encodeURIComponent(name) + '%20ji%2C%20Radiko%20Kheitan%20Limited%20se%20aapke%20liye%20important%20message%20hai.', '_blank'); }
+    function delStu(id) {
+      if (!confirm('Delete student ' + id + '?')) return;
+      if (window._fbReady && window._db) {
+        const stu = getStu().find(s => s.id === id);
+        if (stu && stu.fbId) {
+          window._deleteDoc(window._doc(window._db, 'students', stu.fbId))
+            .then(() => toast('Student deleted.', 'ok'))
+            .catch(e => console.error(e));
+        }
+      } else {
+        sD('rk_students', getStu().filter(s => s.id !== id));
+        toast('Student deleted.', 'ok'); renderAll();
+      }
+    }
+
+    async function saveStu() {
+      const n = document.getElementById('mn').value.trim(), ph = document.getElementById('mph').value.trim(), pw = document.getElementById('mpw').value.trim();
+      if (!n || !ph || !pw) { showMM('sMM', 'Name, Phone and Password required.', 'err'); return; }
+      const btn = document.getElementById('saveStuBtn'); btn.disabled = true; btn.textContent = 'Saving…';
+      const id = nextId(), t = new Date();
+      const stuData = {
+        id, name: n, phone: ph,
+        email: document.getElementById('mem').value.trim(),
+        dob: document.getElementById('mdb').value,
+        course: document.getElementById('mcr').value,
+        batch: document.getElementById('mbt').value.trim(),
+        gender: document.getElementById('mgn').value,
+        address: document.getElementById('mad').value.trim(),
+        attendance: 0, certGovt: 'Pending', certSanstha: 'Pending',
+        password: pw, education: '',
+        enrolledOn: t.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+        createdAt: Date.now()
+      };
+      if (window._fbReady && window._db) {
+        window._addDoc(window._collection(window._db, 'students'), stuData)
+          .then(() => { showMM('sMM', '✅ Student added! ID: ' + id, 'ok'); btn.disabled = false; btn.textContent = 'Save Student'; setTimeout(() => { closeM('student');['mn', 'mph', 'mem', 'mdb', 'mbt', 'mpw', 'mad'].forEach(i => document.getElementById(i).value = ''); }, 1500); })
+          .catch(e => { console.error(e); showMM('sMM', '❌ Save failed!', 'err'); btn.disabled = false; btn.textContent = 'Save Student'; });
+      } else {
+        const stus = getStu(); stus.unshift(stuData); sD('rk_students', stus);
+        showMM('sMM', '✅ Student added! ID: ' + id, 'ok'); btn.disabled = false; btn.textContent = 'Save Student';
+        setTimeout(() => { closeM('student'); renderAll();['mn', 'mph', 'mem', 'mdb', 'mbt', 'mpw', 'mad'].forEach(i => document.getElementById(i).value = ''); }, 1500);
+      }
+    }
+
+    // ── COURSES ───────────────────────────────────────────────────
+    function renderCourses() {
+      const crs = getCrs(), stus = getStu();
+      document.getElementById('crsTbl').innerHTML = crs.map(c => { const en = stus.filter(s => s.course === c.name).length; return `<tr><td><strong>${c.name}</strong></td><td>${c.dur}</td><td><span class="badge bb">${c.cat}</span></td><td>${en}</td><td><span class="badge ${c.stat === 'Active' ? 'bg' : 'br'}">${c.stat}</span></td><td><button class="ab db" onclick="delCrs('${c.fbId || c.id}')">Remove</button></td></tr>`; }).join('');
+    }
+    async function saveCrs() {
+      const n = document.getElementById('cn').value.trim();
+      if (!n) { alert('Course name zaroori hai.'); return; }
+      const crsData = { id: Date.now(), name: n, dur: document.getElementById('cd').value, cat: document.getElementById('cc').value, stat: document.getElementById('cs').value, createdAt: Date.now() };
+      if (window._fbReady && window._db) {
+        await window._addDoc(window._collection(window._db, 'courses'), crsData);
+      } else { const crs = getCrs(); crs.push(crsData); sD('rk_courses', crs); renderAll(); }
+      closeM('course'); toast('Course added!', 'ok');
+    }
+    async function delCrs(id) {
+      if (!confirm('Remove course?')) return;
+      if (window._fbReady && window._db) {
+        await window._deleteDoc(window._doc(window._db, 'courses', String(id)));
+      } else { sD('rk_courses', getCrs().filter(c => c.id !== id && c.fbId !== id)); renderAll(); }
+      toast('Removed.', 'ok');
+    }
+
+    // ── ATTENDANCE ────────────────────────────────────────────────
+    function populateAtt() { const sel = document.getElementById('attF'); const cur = sel.value; sel.innerHTML = '<option value="">All Courses</option>' + getCrs().map(c => `<option value="${c.name}"${cur === c.name ? ' selected' : ''}>${c.name}</option>`).join(''); }
+    function renderAtt() {
+      const f = document.getElementById('attF').value; const list = f ? getStu().filter(s => s.course === f) : getStu();
+      const tb = document.getElementById('attTbl');
+      if (!list.length) { tb.innerHTML = '<tr class="lr"><td colspan="5">No students.</td></tr>'; return; }
+      tb.innerHTML = list.map(s => `<tr><td><strong>${s.id}</strong></td><td>${s.name}</td><td style="max-width:110px;white-space:normal;line-height:1.3;font-size:12px">${s.course}</td><td><span class="badge ${Number(s.attendance || 0) >= 80 ? 'bg' : 'by'}">${s.attendance || 0}%</span></td><td style="display:flex;gap:6px;align-items:center"><input type="number" min="0" max="100" value="${s.attendance || 0}" id="att_${s.id}" style="width:58px;padding:5px 7px;border:1.5px solid var(--g200);border-radius:6px;font-size:12px;font-family:'DM Sans',sans-serif;outline:none"/><button onclick="updAtt('${s.id}')" style="padding:5px 10px;background:var(--pale);color:var(--blue);border:none;border-radius:6px;font-size:11.5px;font-weight:600;cursor:pointer;white-space:nowrap">Update</button></td></tr>`).join('');
+    }
+    async function updAtt(id) {
+      const val = parseInt(document.getElementById('att_' + id).value) || 0;
+      if (val < 0 || val > 100) { toast('0-100 ke beech daalein.', 'err'); return; }
+      const stu = getStu().find(s => s.id === id);
+      if (window._fbReady && window._db && stu && stu.fbId) {
+        await window._updateDoc(window._doc(window._db, 'students', stu.fbId), { attendance: val });
+      } else {
+        sD('rk_students', getStu().map(s => s.id === id ? { ...s, attendance: val } : s));
+        renderAll();
+      }
+      toast('Attendance updated!', 'ok');
+    }
+
+    // ── MARKS ─────────────────────────────────────────────────────
+    function populateMarksStu() { const sel = document.getElementById('mk_stu'); const sel2 = document.getElementById('marksFilter'); const stus = getStu(); const opts = stus.map(s => `<option value="${s.id}">${s.id} - ${s.name}</option>`).join(''); sel.innerHTML = opts; sel2.innerHTML = '<option value="">All Students</option>' + stus.map(s => `<option value="${s.id}">${s.id} - ${s.name}</option>`).join(''); }
+    function renderMarks() {
+      const f = document.getElementById('marksFilter').value; const all = getAllMarks();
+      const list = f ? all.filter(m => m.stuId === f) : all;
+      const stus = getStu();
+      const tb = document.getElementById('marksTbl');
+      if (!list.length) { tb.innerHTML = '<tr class="lr"><td colspan="8">No marks added yet.</td></tr>'; return; }
+      tb.innerHTML = list.map((m, i) => { const s = stus.find(x => x.id === m.stuId) || { name: '—' }; const pct = Math.round(m.obtained / m.total * 100); const g = pct >= 75 ? 'A' : pct >= 60 ? 'B' : pct >= 45 ? 'C' : 'F'; return `<tr><td><strong>${m.stuId}</strong></td><td>${s.name}</td><td>${m.subject}</td><td>${m.obtained}</td><td>${m.total}</td><td>${pct}%</td><td><span class="badge ${pct >= 75 ? 'bg' : pct >= 60 ? 'bb' : pct >= 45 ? 'by' : 'br'}">${g}</span></td><td><button class="ab db" onclick="delMark(${i})">Del</button></td></tr>`; }).join('');
+    }
+    function saveMarks() {
+      const stuId = document.getElementById('mk_stu').value; const sub = document.getElementById('mk_sub').value.trim(); const obt = parseInt(document.getElementById('mk_obt').value) || 0; const tot = parseInt(document.getElementById('mk_tot').value) || 0;
+      if (!sub || !tot) { showMM('mMM', 'Student, Subject and Total Marks required.', 'err'); return; }
+      const all = getAllMarks();
+      all.push({ stuId, subject: sub, obtained: obt, total: tot, date: document.getElementById('mk_date').value });
+      sD('rk_allmarks', all);
+      // Also save per-student for portal access
+      const stuMarks = all.filter(m => m.stuId === stuId);
+      localStorage.setItem('rk_marks_' + stuId, JSON.stringify(stuMarks));
+      showMM('mMM', '✅ Marks saved!', 'ok');
+      setTimeout(() => { closeM('marks'); renderAll(); document.getElementById('mk_sub').value = ''; document.getElementById('mk_obt').value = ''; document.getElementById('mk_tot').value = ''; }, 1200);
+    }
+    function delMark(i) { if (!confirm('Delete this marks record?')) return; const all = getAllMarks(); const stuId = all[i].stuId; all.splice(i, 1); sD('rk_allmarks', all); const stuMarks = all.filter(m => m.stuId === stuId); localStorage.setItem('rk_marks_' + stuId, JSON.stringify(stuMarks)); toast('Marks deleted.', 'ok'); renderAll(); }
+
+    // ── CERTIFICATES ──────────────────────────────────────────────
+    function renderCerts() {
+      const tb = document.getElementById('certTbl'); const stus = getStu();
+      if (!stus.length) { tb.innerHTML = '<tr class="lr"><td colspan="6">No students.</td></tr>'; return; }
+      tb.innerHTML = stus.map(s => `<tr><td><strong>${s.id}</strong></td><td>${s.name}</td><td style="max-width:100px;white-space:normal;line-height:1.3;font-size:12px">${s.course}</td><td><select onchange="updCert('${s.id}','certGovt',this.value)" style="padding:5px 7px;border:1.5px solid var(--g200);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px"><option${s.certGovt === 'Pending' ? ' selected' : ''}>Pending</option><option${s.certGovt === 'Issued' ? ' selected' : ''}>Issued</option></select></td><td><select onchange="updCert('${s.id}','certSanstha',this.value)" style="padding:5px 7px;border:1.5px solid var(--g200);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px"><option${s.certSanstha === 'Pending' ? ' selected' : ''}>Pending</option><option${s.certSanstha === 'Issued' ? ' selected' : ''}>Issued</option></select></td><td><span class="badge ${s.certGovt === 'Issued' && s.certSanstha === 'Issued' ? 'bg' : 'by'}">${s.certGovt === 'Issued' && s.certSanstha === 'Issued' ? 'Both ✅' : 'Pending'}</span></td></tr>`).join('');
+    }
+    async function updCert(id, f, v) {
+      const stu = getStu().find(s => s.id === id);
+      if (window._fbReady && window._db && stu && stu.fbId) {
+        await window._updateDoc(window._doc(window._db, 'students', stu.fbId), { [f]: v });
+      } else {
+        sD('rk_students', getStu().map(s => s.id === id ? { ...s, [f]: v } : s));
+      }
+      renderCerts(); renderDash();
+    }
+
+    // ── NOTICES ───────────────────────────────────────────────────
+    function renderNotes() {
+      const notes = getNotes();
+      document.getElementById('noteList').innerHTML = notes.length
+        ? notes.map(n => `<div class="ni"><div><div class="ni-t">📢 ${n.title}</div><div class="ni-c">${n.content}</div><div class="ni-d">${n.date || ''}</div></div><button class="ab db" onclick="delNote('${n.fbId || n.id}')" style="flex-shrink:0">Delete</button></div>`).join('')
+        : '<p style="color:var(--g400);font-size:13px">No notices yet.</p>';
+    }
+    async function saveNote() {
+      const t = document.getElementById('nt').value.trim(), c = document.getElementById('nc').value.trim();
+      if (!t || !c) { alert('Title aur content zaroori hain.'); return; }
+      const noteData = { title: t, content: c, date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }), createdAt: Date.now() };
+      if (window._fbReady && window._db) {
+        await window._addDoc(window._collection(window._db, 'notices'), noteData);
+      } else {
+        const notes = getNotes(); const id = Math.max(0, ...notes.map(n => n.id || 0)) + 1;
+        notes.unshift({ ...noteData, id }); sD('rk_notices', notes); renderAll();
+      }
+      closeM('notice'); toast('Notice posted!', 'ok');
+      document.getElementById('nt').value = ''; document.getElementById('nc').value = '';
+    }
+    async function delNote(id) {
+      if (!confirm('Delete notice?')) return;
+      if (window._fbReady && window._db) {
+        await window._deleteDoc(window._doc(window._db, 'notices', String(id)));
+      } else {
+        sD('rk_notices', getNotes().filter(n => (n.fbId || n.id) !== id));
+        renderAll();
+      }
+      toast('Deleted.', 'ok');
+    }
+
+    // ── ENQUIRIES ─────────────────────────────────────────────────
+    function renderEnquiries() {
+      const enqs = getEnqs();
+      document.getElementById('enqCount').textContent = enqs.length + ' total';
+      document.getElementById('enqList').innerHTML = enqs.length
+        ? enqs.map(e => `<div class="enq-card"><div class="enq-name">${e.name} &nbsp;<span style="color:var(--blue);font-size:13px">${e.phone}</span>${e.email ? ` &nbsp;<span style="color:var(--g500);font-size:12px">${e.email}</span>` : ''}</div><div class="enq-detail">Course Interest: <strong>${e.course || 'Not specified'}</strong></div>${e.message ? `<div class="enq-detail" style="margin-top:4px;color:var(--g700)">Message: ${e.message}</div>` : ''}<div class="enq-footer"><div class="enq-date">📅 ${e.date || ''}</div><div style="display:flex;gap:7px"><button class="ab wb" onclick="waEnq('${e.phone}','${e.name}')">💬 WhatsApp</button><button class="ab db" onclick="delEnq('${e.fbId || e.id}')">Delete</button></div></div></div>`).join('')
+        : '<p style="color:var(--g500);font-size:14px;text-align:center;padding:24px">No enquiries received yet.</p>';
+    }
+    function waEnq(phone, name) { window.open('https://wa.me/91' + phone + '?text=Namaste%20' + encodeURIComponent(name) + '%20ji%2C%20Radiko%20Kheitan%20Limited%20se%20bol%20rahe%20hain.', '_blank'); }
+    async function delEnq(id) {
+      if (!confirm('Delete this enquiry?')) return;
+      if (window._fbReady && window._db) {
+        await window._deleteDoc(window._doc(window._db, 'enquiries', String(id)));
+      } else {
+        const e = getEnqs(); e.splice(id, 1); sD('rk_enquiries', e); renderAll();
+      }
+      toast('Enquiry deleted.', 'ok');
+    }
+    async function clearAllEnq() {
+      if (!confirm('Saari enquiries delete karein?')) return;
+      if (window._fbReady && window._db) {
+        const enqs = getEnqs();
+        for (const e of enqs) {
+          if (e.fbId) await window._deleteDoc(window._doc(window._db, 'enquiries', e.fbId));
+        }
+      } else { sD('rk_enquiries', []); renderAll(); }
+      toast('All cleared.', 'ok');
+    }
+
+    // ── COMPLAINTS ────────────────────────────────────────────────
+    function renderComplaints() {
+      const allComps = window._fbComplaints || [];
+      document.getElementById('complaintList').innerHTML = allComps.length
+        ? allComps.map(c => `<div class="enq-card"><div class="enq-name">${c.stuName || ''} (${c.stuId || ''}) — <span style="color:var(--blue)">${c.category || ''}</span></div><div style="font-size:14px;font-weight:700;color:var(--navy);margin:6px 0">${c.subject || ''}</div><div class="enq-detail">${c.message || ''}</div><div class="enq-footer"><div class="enq-date">📅 ${c.date || ''}</div><div style="display:flex;gap:7px"><button class="ab ${c.status === 'Resolved' ? 'eb' : 'wb'}" onclick="toggleComplaint('${c.fbId || c.id}','${c.status || 'Pending'}')">${c.status === 'Resolved' ? 'Mark Pending' : 'Mark Resolved'}</button></div></div></div>`).join('')
+        : '<p style="color:var(--g500);font-size:14px;text-align:center;padding:24px">No complaints received yet.</p>';
+    }
+    async function toggleComplaint(id, curStatus) {
+      const newStatus = curStatus === 'Resolved' ? 'Pending' : 'Resolved';
+      if (window._fbReady && window._db) {
+        await window._updateDoc(window._doc(window._db, 'complaints', String(id)), { status: newStatus });
+      }
+      toast('Status updated!', 'ok');
+    }
+
+    // ── BACKUP ────────────────────────────────────────────────────
+    function exportData() {
+      const data = { students: getStu(), courses: getCrs(), notices: getNotes(), enquiries: getEnqs(), marks: getAllMarks(), admin: getAdmin(), exportDate: new Date().toISOString() };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'radiko_backup_' + new Date().toISOString().split('T')[0] + '.json'; a.click(); URL.revokeObjectURL(url);
+      toast('Data exported!', 'ok');
+    }
+    function importData(input) {
+      const file = input.files[0]; if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (!confirm('This will replace ALL current data. Are you sure?')) return;
+          if (data.students) sD('rk_students', data.students);
+          if (data.courses) sD('rk_courses', data.courses);
+          if (data.notices) sD('rk_notices', data.notices);
+          if (data.enquiries) sD('rk_enquiries', data.enquiries);
+          if (data.marks) sD('rk_allmarks', data.marks);
+          if (data.admin) sD('rk_admin', data.admin);
+          toast('Data imported successfully!', 'ok'); renderAll();
+        } catch (err) { alert('Invalid JSON file. Please use a valid backup file.'); }
+      };
+      reader.readAsText(file); input.value = '';
+    }
+    function clearAllData() {
+      if (!confirm('Are you sure? This will delete ALL data permanently!')) return;
+      if (!confirm('LAST WARNING: This cannot be undone. Continue?')) return;
+      ['rk_students', 'rk_courses', 'rk_notices', 'rk_enquiries', 'rk_allmarks'].forEach(k => localStorage.removeItem(k));
+      toast('All data cleared!', 'ok'); renderAll();
+    }
+
+    // ── SETTINGS ──────────────────────────────────────────────────
+    function changePw() {
+      const o = document.getElementById('oPw').value.trim(), n = document.getElementById('nPw').value.trim(), c = document.getElementById('cPw').value.trim();
+      if (!o || !n || !c) { showMM('pwMsg', 'All fields required.', 'err'); return; }
+      const a = getAdmin(); if (o !== a.password) { showMM('pwMsg', 'Current password incorrect.', 'err'); return; }
+      if (n !== c) { showMM('pwMsg', 'New passwords do not match.', 'err'); return; }
+      if (n.length < 4) { showMM('pwMsg', 'Min 4 characters required.', 'err'); return; }
+      sD('rk_admin', { ...a, password: n }); showMM('pwMsg', '✅ Password changed!', 'ok');
+      document.getElementById('oPw').value = ''; document.getElementById('nPw').value = ''; document.getElementById('cPw').value = '';
+    }
+    function saveWA() {
+      const num = document.getElementById('waNum').value.trim();
+      if (num && (num.length !== 10 || !/^\d{10}$/.test(num))) { showMM('waMsg', 'Enter valid 10-digit number.', 'err'); return; }
+      localStorage.setItem('rk_wa', num || 'XXXXXXXXXX');
+      showMM('waMsg', '✅ WhatsApp number saved!', 'ok');
+    }
+
+    // ── UI HELPERS ────────────────────────────────────────────────
+    function go(name, el) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+      document.querySelectorAll('.mi').forEach(m => m.classList.remove('on'));
+      document.getElementById('tab-' + name).classList.add('on'); el.classList.add('on');
+      if (name === 'attendance') { populateAtt(); renderAtt(); } if (name === 'marks') { renderMarks(); populateMarksStu(); } if (name === 'photos') renderAdminGallery(); if (name === 'reviews') renderAdminReviews(); closeSb();
+    }
+    function openM(t) { document.getElementById('m' + t[0].toUpperCase() + t.slice(1)).classList.add('open'); }
+    function closeM(t) { document.getElementById('m' + t[0].toUpperCase() + t.slice(1)).classList.remove('open'); }
+    document.querySelectorAll('.mod-bg').forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }));
+    function showMM(id, msg, type) { const el = document.getElementById(id); el.textContent = msg; el.className = 'mm mm-' + type; el.style.display = 'block'; if (type === 'ok') setTimeout(() => el.style.display = 'none', 3000); }
+    let tt;
+    function toast(msg, type) { const t = document.getElementById('toast'); t.textContent = msg; t.style.background = type === 'ok' ? '#16a34a' : '#b91c1c'; t.style.display = 'block'; t.style.opacity = '1'; clearTimeout(tt); tt = setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.style.display = 'none', 300); }, 2500); }
+    function logout() { if (window._fbSignOut) { window._fbSignOut(); } else { sessionStorage.removeItem('rk_admin_auth'); location.href = 'admin-login.html'; } }
+
+    /* ═══ PHOTOS MANAGEMENT ═══ */
+    const DEFAULT_PHOTOS = [
+      { id: -1, url: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=500&q=75', caption: '💻 Computer Lab', category: 'Classroom' },
+      { id: -2, url: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500&q=75', caption: '👨‍🎓 Students Learning', category: 'Students' },
+      { id: -3, url: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=500&q=75', caption: '🛠️ Practical Training', category: 'Training' },
+      { id: -4, url: 'https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?w=500&q=75', caption: '📱 Mobile Repair Workshop', category: 'Training' },
+      { id: -5, url: 'https://images.unsplash.com/photo-1596496050827-8299e0220de1?w=500&q=75', caption: '🧵 Tailoring Class', category: 'Classroom' },
+      { id: -6, url: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=500&q=75', caption: '🎓 Certificate Distribution', category: 'Certificate' }
+    ];
+
+    function getPhotos() { return window._fbPhotos || []; }
+
+    function renderAdminGallery() {
+      const filter = document.getElementById('galCatFilter') ? document.getElementById('galCatFilter').value : '';
+      let photos = window._fbPhotos || [];
+      const grid = document.getElementById('adminGalGrid');
+      if (!grid) return;
+
+      if (!window._fbReady) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--g500)"><div style="font-size:24px;margin-bottom:8px">⏳</div>Firebase connect ho raha hai...</div>';
+        setTimeout(renderAdminGallery, 1000);
+        return;
+      }
+
+      if (!photos.length) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--g500)"><div style="font-size:32px;margin-bottom:8px">📷</div>Koi photo nahi.<br><small>Upar se add karein.</small></div>';
+        return;
+      }
+
+      if (filter) photos = photos.filter(p => p.category === filter);
+      if (!photos.length) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--g500)">Is category mein koi photo nahi.</div>';
+        return;
+      }
+
+      grid.innerHTML = photos.map(p => `
+        <div class="adm-ph-item">
+          <img src="${p.url}" alt="${p.caption || ''}" loading="lazy"
+            onload="this.style.opacity='1';this.parentElement.style.background='transparent'"
+            onerror="this.parentElement.innerHTML='<div style=\'padding:8px;text-align:center;color:#6b7280;font-size:11px\'>❌ Load nahi hui</div>'"
+            style="opacity:0;transition:opacity .4s;width:100%;height:100%;object-fit:cover"/>
+          <div class="adm-ph-ov">
+            <div class="adm-ph-cap">${p.caption || ''}<br><span style="font-size:10px;opacity:.7">${p.category || ''}</span></div>
+            <button class="adm-ph-del" onclick="deletePhotoAdmin('${p.id}')">🗑️ Delete</button>
+          </div>
+        </div>`).join('');
+    }
+
+    async function savePhotoAdmin() {
+      const url = document.getElementById('ph_url').value.trim();
+      const cap = document.getElementById('ph_cap').value.trim();
+      const cat = document.getElementById('ph_cat').value;
+      const mm = document.getElementById('phMM');
+
+      if (!url) { mm.textContent = '⚠️ Photo URL zaroori hai.'; mm.className = 'mm mm-err'; mm.style.display = 'block'; return; }
+      if (!cap) { mm.textContent = '⚠️ Caption zaroori hai.'; mm.className = 'mm mm-err'; mm.style.display = 'block'; return; }
+
+      // Validate URL format
+      if (!url.startsWith('http')) { mm.textContent = '⚠️ Valid URL daalein — http:// se shuru hona chahiye.'; mm.className = 'mm mm-err'; mm.style.display = 'block'; return; }
+
+      mm.textContent = '⏳ Photo save ho rahi hai...'; mm.className = 'mm mm-ok'; mm.style.display = 'block';
+
+      // Wait for Firebase if not ready
+      if (!window._fbReady || !window._db) {
+        mm.textContent = '⏳ Firebase connect ho raha hai — thoda wait karein...'; mm.style.display = 'block';
+        await new Promise(resolve => {
+          let attempts = 0;
+          const check = setInterval(() => {
+            attempts++;
+            if (window._fbReady && window._db) { clearInterval(check); resolve(); }
+            if (attempts > 20) { clearInterval(check); resolve(); }
+          }, 500);
+        });
+      }
+
+      if (window._fbReady && window._db) {
+        try {
+          await window._addDoc(window._collection(window._db, 'photos'), {
+            url, caption: cap, category: cat,
+            date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+            createdAt: Date.now()
+          });
+          mm.textContent = '✅ Photo add ho gayi! Gallery mein dikh rahi hai.';
+          mm.className = 'mm mm-ok';
+          document.getElementById('ph_url').value = '';
+          document.getElementById('ph_cap').value = '';
+          setTimeout(() => { closeM('photo'); mm.style.display = 'none'; }, 1500);
+        } catch (e) {
+          console.error('Photo save error:', e);
+          mm.textContent = '❌ Save nahi hua: ' + e.message + ' — Internet check karein.';
+          mm.className = 'mm mm-err';
+        }
+      } else {
+        mm.textContent = '❌ Firebase connect nahi hua — page refresh karke try karein.';
+        mm.className = 'mm mm-err';
+      }
+    }
+
+    async function deletePhotoAdmin(id) {
+      if (!confirm('Is photo ko delete karein?')) return;
+      if (window._fbReady && window._db) {
+        try {
+          await window._deleteDoc(window._doc(window._db, 'photos', String(id)));
+          toast('Photo delete ho gayi! ✅', 'ok');
+        } catch (e) {
+          console.error('Delete error:', e);
+          toast('Delete nahi hua — ' + e.message, 'err');
+        }
+      } else {
+        toast('Firebase connect nahi hua.', 'err');
+      }
+    }
+
+    /* ═══ REVIEWS MANAGEMENT ═══ */
+    function getUserReviewsAdmin() { return window._fbAllReviews || []; }
+
+    function renderAdminReviews() {
+      const all = getUserReviewsAdmin();
+      const pending = all.filter(r => !r.approved);
+      const approved = all.filter(r => r.approved);
+
+      const pb = document.getElementById('reviewBadge');
+      if (pb) { pb.textContent = pending.length; pb.style.display = pending.length ? 'inline' : 'none'; }
+      const pc = document.getElementById('pendingRvCount');
+      if (pc) pc.textContent = pending.length + ' pending';
+      const ac = document.getElementById('approvedRvCount');
+      if (ac) ac.textContent = approved.length + ' approved';
+
+      const pList = document.getElementById('pendingRvList');
+      if (pList) {
+        if (!pending.length) { pList.innerHTML = '<p style="color:var(--g500);font-size:13px;text-align:center;padding:16px">Koi pending review nahi.</p>'; }
+        else {
+          pList.innerHTML = pending.map(r => `
+          <div class="pend-rv-card">
+            <div style="font-size:13px;font-weight:700;color:var(--navy)">${r.name} <span class="badge bb">${r.course}</span></div>
+            <div class="pend-rv-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+            <div class="pend-rv-text">"${r.text}"</div>
+            <div class="pend-rv-meta">📍 ${r.city || '—'} &nbsp;|&nbsp; 📅 ${r.date || ''}</div>
+            <div class="pend-rv-actions">
+              <button class="ab wb" onclick="approveReview('${r.id}')">✅ Approve</button>
+              <button class="ab db" onclick="rejectReview('${r.id}')">❌ Reject</button>
+            </div>
+          </div>`).join('');
+        }
+      }
+
+      const aList = document.getElementById('approvedRvList');
+      if (aList) {
+        if (!approved.length) { aList.innerHTML = '<p style="color:var(--g500);font-size:13px;text-align:center;padding:16px">Koi approved review nahi.</p>'; }
+        else {
+          aList.innerHTML = approved.map(r => `
+          <div class="appr-rv-card">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start">
+              <div><span style="font-size:13px;font-weight:700;color:var(--navy)">${r.name}</span>
+              <span class="badge bg" style="margin-left:6px">${r.course}</span></div>
+              <button class="ab db" onclick="deleteReviewAdmin('${r.id}')" style="flex-shrink:0">Delete</button>
+            </div>
+            <div style="color:#f59e0b;font-size:13px;letter-spacing:2px;margin:5px 0">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+            <div style="font-size:13px;color:var(--g700);font-style:italic">"${r.text}"</div>
+            <div style="font-size:11.5px;color:var(--g500);margin-top:6px">📍 ${r.city || '—'} &nbsp;|&nbsp; 📅 ${r.date || ''}</div>
+          </div>`).join('');
+        }
+      }
+    }
+
+    async function approveReview(id) {
+      if (window._fbReady && window._db) {
+        try { await window._updateDoc(window._doc(window._db, 'reviews', String(id)), { approved: true }); toast('Review approve ho gayi! ✅', 'ok'); }
+        catch (e) { console.error(e); toast('Error!', 'err'); }
+      }
+    }
+
+    async function rejectReview(id) {
+      if (!confirm('Is review ko reject karein?')) return;
+      if (window._fbReady && window._db) {
+        try { await window._deleteDoc(window._doc(window._db, 'reviews', String(id))); toast('Review reject kar di.', 'ok'); }
+        catch (e) { console.error(e); toast('Error!', 'err'); }
+      }
+    }
+
+    async function deleteReviewAdmin(id) {
+      if (!confirm('Is review ko delete karein?')) return;
+      if (window._fbReady && window._db) {
+        try { await window._deleteDoc(window._doc(window._db, 'reviews', String(id))); toast('Review deleted.', 'ok'); }
+        catch (e) { console.error(e); toast('Error!', 'err'); }
+      }
+    }
+
+    async function clearApprovedRv() {
+      if (!confirm('Saari approved reviews delete karein?')) return;
+      const approved = getUserReviewsAdmin().filter(r => r.approved);
+      for (const r of approved) {
+        try { await window._deleteDoc(window._doc(window._db, 'reviews', String(r.id))); } catch (e) { }
+      }
+      toast('Reviews cleared.', 'ok');
+    }
+
+    /* Update renderAll and go() to include new tabs */
+
+
+    function updateDashBadges() {
+      const pending = getUserReviewsAdmin().filter(r => !r.approved).length;
+      const pb = document.getElementById('reviewBadge');
+      if (pb) { pb.textContent = pending; pb.style.display = pending ? 'inline' : 'none'; }
+    }
+    function toggleSb() { document.getElementById('sidebar').classList.toggle('mob-open'); document.getElementById('overlay').classList.toggle('show'); document.body.style.overflow = document.getElementById('sidebar').classList.contains('mob-open') ? 'hidden' : ''; }
+    function closeSb() { document.getElementById('sidebar').classList.remove('mob-open'); document.getElementById('overlay').classList.remove('show'); document.body.style.overflow = ''; }
+  </script>
+
+  <!-- ═══ FIREBASE ADMIN ═══ -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, query, orderBy, onSnapshot, setDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB76ypWlVEQbX0APfDV_4NWxot-G-AQ6Jg",
+      authDomain: "coaching-site-33976.firebaseapp.com",
+      projectId: "coaching-site-33976",
+      storageBucket: "coaching-site-33976.firebasestorage.app",
+      messagingSenderId: "1092542641030",
+      appId: "1:1092542641030:web:4baace4d9bfa4e4c09b207"
+    };
+
+    const ADMIN_UID = "Xgtylo3hKJRg7zFXPyi9HDZnPp72";
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // ── Auth check ──
+    onAuthStateChanged(auth, user => {
+      if (!user || user.uid !== ADMIN_UID) {
+        // Not logged in or not admin
+        sessionStorage.removeItem('rk_admin_auth');
+        window.location.href = 'admin-login.html';
+        return;
+      }
+      // Valid admin
+      sessionStorage.setItem('rk_admin_auth', 'true');
+      sessionStorage.setItem('rk_admin_uid', user.uid);
+    });
+
+    // ── Logout with Firebase ──
+    window._fbSignOut = async function () {
+      await signOut(auth);
+      sessionStorage.removeItem('rk_admin_auth');
+      sessionStorage.removeItem('rk_admin_uid');
+      window.location.href = 'admin-login.html';
+    };
+
+    // ── Global Firebase helpers ──
+    window._db = db;
+    window._fbReady = true;
+    window._collection = collection;
+    window._addDoc = addDoc;
+    window._getDocs = getDocs;
+    window._doc = doc;
+    window._deleteDoc = deleteDoc;
+    window._updateDoc = updateDoc;
+    window._setDoc = setDoc;
+    window._query = query;
+    window._orderBy = orderBy;
+    window._onSnapshot = onSnapshot;
+    window._writeBatch = writeBatch;
+
+    // ── Real-time listeners ──
+    onSnapshot(query(collection(db, 'students'), orderBy('createdAt', 'desc')), snap => { window._fbStudents = snap.docs.map(d => ({ fbId: d.id, ...d.data() })); if (typeof renderAll === 'function') renderAll(); });
+    onSnapshot(query(collection(db, 'courses'), orderBy('createdAt', 'asc')), snap => { window._fbCourses = snap.docs.map(d => ({ fbId: d.id, ...d.data() })); if (typeof renderCourses === 'function') renderCourses(); });
+    onSnapshot(query(collection(db, 'enquiries'), orderBy('createdAt', 'desc')), snap => { window._fbEnquiries = snap.docs.map(d => ({ fbId: d.id, ...d.data() })); if (typeof renderEnquiries === 'function') renderEnquiries(); if (typeof renderDash === 'function') renderDash(); });
+    onSnapshot(query(collection(db, 'notices'), orderBy('createdAt', 'desc')), snap => { window._fbNotices = snap.docs.map(d => ({ fbId: d.id, ...d.data() })); if (typeof renderNotes === 'function') renderNotes(); });
+    onSnapshot(query(collection(db, 'complaints'), orderBy('createdAt', 'desc')), snap => { window._fbComplaints = snap.docs.map(d => ({ fbId: d.id, ...d.data() })); if (typeof renderComplaints === 'function') renderComplaints(); });
+    onSnapshot(query(collection(db, 'photos'), orderBy('createdAt', 'desc')), snap => { window._fbPhotos = snap.docs.map(d => ({ id: d.id, ...d.data() })); if (typeof renderAdminGallery === 'function') renderAdminGallery(); if (typeof renderDash === 'function') renderDash(); });
+    onSnapshot(query(collection(db, 'reviews'), orderBy('createdAt', 'desc')), snap => {
+      window._fbAllReviews = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      if (typeof renderAdminReviews === 'function') renderAdminReviews();
+      const pending = window._fbAllReviews.filter(r => !r.approved).length;
+      const badge = document.getElementById('reviewBadge');
+      if (badge) { badge.textContent = pending; badge.style.display = pending ? 'inline' : 'none'; }
+    });
+
+    // ── Auto-migrate localStorage data to Firebase (one time) ──
+    async function migrateToFirebase() {
+      const migrated = localStorage.getItem('rk_fb_migrated');
+      if (migrated) return;
+      console.log('🔄 Migrating localStorage data to Firebase...');
+      try {
+        const batch = writeBatch(db);
+        const stuData = JSON.parse(localStorage.getItem('rk_students') || '[]');
+        for (const s of stuData) { const ref = doc(collection(db, 'students')); batch.set(ref, { ...s, createdAt: s.createdAt || Date.now() }); }
+        const crsData = JSON.parse(localStorage.getItem('rk_courses') || '[]');
+        for (const c of crsData) { const ref = doc(collection(db, 'courses')); batch.set(ref, { ...c, createdAt: c.createdAt || Date.now() }); }
+        const notData = JSON.parse(localStorage.getItem('rk_notices') || '[]');
+        for (const n of notData) { const ref = doc(collection(db, 'notices')); batch.set(ref, { ...n, createdAt: n.createdAt || Date.now() }); }
+        const enqData = JSON.parse(localStorage.getItem('rk_enquiries') || '[]');
+        for (const e of enqData) { const ref = doc(collection(db, 'enquiries')); batch.set(ref, { ...e, createdAt: e.createdAt || Date.now() }); }
+        await batch.commit();
+        localStorage.setItem('rk_fb_migrated', 'true');
+        console.log('✅ Migration complete!');
+      } catch (e) { console.error('Migration error:', e); }
+    }
+
+    migrateToFirebase();
+    console.log('✅ Firebase Admin connected!');
+  </script>
+</body>
+
+</html>
+
+</html>

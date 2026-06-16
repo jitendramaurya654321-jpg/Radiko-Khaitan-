@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Admin Login – Radiko Khaitan Limited</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      color: #111827;
+      background: #f0f6ff;
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column
+    }
+
+    .nav {
+      background: #fff;
+      box-shadow: 0 2px 16px rgba(10, 31, 60, .1);
+      padding: 14px 0
+    }
+
+    .nav-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 clamp(16px, 3vw, 32px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .brand-name {
+      font-weight: 800;
+      font-size: clamp(14px, 3.5vw, 18px);
+      color: #0a1f3c
+    }
+
+    .brand-tag {
+      font-size: clamp(8px, 1.8vw, 10px);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #9ca3af;
+      margin-top: 2px
+    }
+
+    .back {
+      font-size: clamp(13px, 2vw, 15px);
+      color: #1a4faa;
+      font-weight: 700;
+      text-decoration: none
+    }
+
+    .back:hover {
+      text-decoration: underline
+    }
+
+    .page {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(16px, 4vw, 32px)
+    }
+
+    .box {
+      background: #fff;
+      border-radius: clamp(16px, 3vw, 24px);
+      padding: clamp(24px, 5vw, 48px) clamp(20px, 5vw, 44px);
+      width: 100%;
+      max-width: 460px;
+      box-shadow: 0 16px 48px rgba(10, 31, 60, .14);
+      border: 1px solid #e5e7eb
+    }
+
+    .box-icon {
+      text-align: center;
+      font-size: clamp(44px, 7vw, 56px);
+      margin-bottom: 12px
+    }
+
+    .box-title {
+      text-align: center;
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(20px, 4vw, 26px);
+      color: #0a1f3c;
+      margin-bottom: 6px
+    }
+
+    .box-sub {
+      text-align: center;
+      font-size: clamp(13px, 2vw, 15px);
+      color: #6b7280;
+      margin-bottom: 28px
+    }
+
+    .fg {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 18px
+    }
+
+    .fg label {
+      font-size: clamp(12px, 1.8vw, 13px);
+      font-weight: 700;
+      color: #374151;
+      text-transform: uppercase;
+      letter-spacing: .7px
+    }
+
+    .fg input {
+      padding: clamp(11px, 2vw, 13px) clamp(12px, 2.5vw, 14px);
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      font-size: clamp(14px, 2vw, 15px);
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      transition: border-color .2s;
+      width: 100%
+    }
+
+    .fg input:focus {
+      border-color: #2563eb
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: clamp(13px, 2.5vw, 15px);
+      background: linear-gradient(135deg, #0a1f3c, #1a4faa);
+      color: #fff;
+      border: none;
+      border-radius: 11px;
+      font-size: clamp(15px, 2.2vw, 17px);
+      font-weight: 800;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all .2s;
+      box-shadow: 0 4px 16px rgba(10, 31, 60, .25)
+    }
+
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(10, 31, 60, .35)
+    }
+
+    .login-btn:disabled {
+      background: #d1d5db;
+      color: #9ca3af;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none
+    }
+
+    .err-box {
+      background: #fee2e2;
+      border: 1.5px solid #fca5a5;
+      color: #b91c1c;
+      padding: 10px 14px;
+      border-radius: 9px;
+      font-size: 13px;
+      display: none;
+      margin-bottom: 16px;
+      font-weight: 600
+    }
+
+    .hint {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 9px;
+      padding: 11px 14px;
+      font-size: 12px;
+      color: #1e40af;
+      text-align: center;
+      margin-top: 14px;
+      line-height: 1.7
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="nav">
+    <div class="nav-wrap">
+      <div>
+        <div class="brand-name">Radiko Khaitan Limited</div>
+        <div class="brand-tag">Admin Panel</div>
+      </div>
+      <a href="index.html" class="back">← Back to Website</a>
+    </div>
+  </nav>
+  <div class="page">
+    <div class="box">
+      <div class="box-icon">🔐</div>
+      <div class="box-title">Admin Login</div>
+      <div class="box-sub">Restricted access — authorised personnel only</div>
+      <div class="err-box" id="errBox"></div>
+      <div class="fg"><label>Email</label><input type="email" id="uEmail" placeholder="Admin email"
+          autocomplete="email" /></div>
+      <div class="fg"><label>Password</label><input type="password" id="uPass" placeholder="Admin password"
+          autocomplete="current-password" /></div>
+      <button class="login-btn" id="loginBtn" onclick="doLogin()">🔐 Login to Admin Panel</button>
+      <div class="hint">Sirf authorised admin hi login kar sakte hain.<br><small style="color:#6b7280">Firebase
+          Authentication se secured</small></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB76ypWlVEQbX0APfDV_4NWxot-G-AQ6Jg",
+      authDomain: "coaching-site-33976.firebaseapp.com",
+      projectId: "coaching-site-33976",
+      storageBucket: "coaching-site-33976.firebasestorage.app",
+      messagingSenderId: "1092542641030",
+      appId: "1:1092542641030:web:4baace4d9bfa4e4c09b207"
+    };
+
+    const ADMIN_UID = "Xgtylo3hKJRg7zFXPyi9HDZnPp72";
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Auto redirect if already logged in
+    onAuthStateChanged(auth, user => {
+      if (user && user.uid === ADMIN_UID) {
+        window.location.href = 'admin-panel.html';
+      }
+    });
+
+    window.doLogin = async function () {
+      const email = document.getElementById('uEmail').value.trim();
+      const pass = document.getElementById('uPass').value.trim();
+      const err = document.getElementById('errBox');
+      const btn = document.getElementById('loginBtn');
+
+      err.style.display = 'none';
+
+      if (!email || !pass) {
+        err.textContent = '⚠️ Email aur password daalein.';
+        err.style.display = 'block';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span style="display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:8px"></span>Verifying...';
+
+      try {
+        const result = await signInWithEmailAndPassword(auth, email, pass);
+        const user = result.user;
+
+        // Check if this is the admin UID
+        if (user.uid !== ADMIN_UID) {
+          await auth.signOut();
+          err.textContent = '❌ Aap admin nahi hain — access denied.';
+          err.style.display = 'block';
+          btn.disabled = false;
+          btn.innerHTML = '🔐 Login to Admin Panel';
+          return;
+        }
+
+        // Save auth token
+        const token = await user.getIdToken();
+        sessionStorage.setItem('rk_admin_auth', 'true');
+        sessionStorage.setItem('rk_admin_uid', user.uid);
+        sessionStorage.setItem('rk_admin_token', token);
+
+        window.location.href = 'admin-panel.html';
+
+      } catch (e) {
+        let msg = '❌ Login failed.';
+        if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential')
+          msg = '❌ Email ya password galat hai.';
+        else if (e.code === 'auth/wrong-password')
+          msg = '❌ Password galat hai.';
+        else if (e.code === 'auth/too-many-requests')
+          msg = '❌ Bahut zyada attempts — thodi der baad try karein.';
+        else if (e.code === 'auth/network-request-failed')
+          msg = '❌ Internet connection check karein.';
+
+        err.textContent = msg;
+        err.style.display = 'block';
+        btn.disabled = false;
+        btn.innerHTML = '🔐 Login to Admin Panel';
+      }
+    };
+
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') window.doLogin(); });
+  </script>
+</body>
+
+</html>
